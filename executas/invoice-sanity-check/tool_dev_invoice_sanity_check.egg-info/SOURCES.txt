@@ -1,0 +1,7 @@
+invoice_sanity_check_plugin.py
+pyproject.toml
+tool_dev_invoice_sanity_check.egg-info/PKG-INFO
+tool_dev_invoice_sanity_check.egg-info/SOURCES.txt
+tool_dev_invoice_sanity_check.egg-info/dependency_links.txt
+tool_dev_invoice_sanity_check.egg-info/entry_points.txt
+tool_dev_invoice_sanity_check.egg-info/top_level.txt

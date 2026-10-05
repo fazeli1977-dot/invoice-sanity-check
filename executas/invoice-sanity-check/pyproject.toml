@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tool-dev-invoice-sanity-check"
+version = "0.1.0"
+description = "Executa for the invoice-sanity-check Anna App"
+requires-python = ">=3.10"
+
+[project.scripts]
+"tool-dev-invoice-sanity-check" = "invoice_sanity_check_plugin:main"
+
+[tool.setuptools]
+py-modules = ["invoice_sanity_check_plugin"]

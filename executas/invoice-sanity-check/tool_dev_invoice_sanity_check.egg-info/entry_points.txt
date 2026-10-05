@@ -1,0 +1,2 @@
+[console_scripts]
+tool-dev-invoice-sanity-check = invoice_sanity_check_plugin:main

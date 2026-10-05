@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice Sanity Check</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 16px; font-size: 13px; }
+    .header { margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .header h2 { font-size: 16px; color: #fff; }
+    .header p { color: var(--text-muted); font-size: 12px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .section-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .field { margin-bottom: 8px; }
+    .field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    input { width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; outline: none; }
+    input:focus { border-color: var(--primary); }
+    .item-row { background: #0b1120; border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 8px; position: relative; }
+    .item-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 6px; }
+    .btn { background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-sm { padding: 4px 8px; font-size: 11px; }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-block { width: 100%; padding: 8px; margin-top: 8px; font-size: 13px; }
+    #status { padding: 10px; border-radius: 6px; font-size: 12px; white-space: pre-line; display: none; margin-top: 8px; }
+    #status.success { display: block; background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); color: #86efac; }
+    #status.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
+    #status.info { display: block; background: rgba(59, 130, 246, 0.15); border: 1px solid var(--primary); color: #93c5fd; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>Invoice Sanity Check</h2>
+    <p>Validate invoice line-items, tax, and totals</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>Invoice Number</label>
+      <input id="invoice-number" type="text" value="INV-2026-001" placeholder="INV-001" />
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <span>Line Items</span>
+      <button id="add-item-btn" class="btn btn-sm" type="button">+ Add Item</button>
+    </div>
+    <div id="items-container"></div>
+  </div>
+
+  <div class="card">
+    <div class="form-grid">
+      <div class="field">
+        <label>Subtotal ($)</label>
+        <input id="subtotal" type="number" step="0.01" value="250.00" />
+      </div>
+      <div class="field">
+        <label>Tax ($)</label>
+        <input id="tax" type="number" step="0.01" value="25.00" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Total ($)</label>
+      <input id="total" type="number" step="0.01" value="275.00" />
+    </div>
+    <button id="check-btn" class="btn btn-block" type="button">Check Invoice</button>
+    <div id="status"></div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
