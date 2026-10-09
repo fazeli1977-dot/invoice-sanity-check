@@ -1,0 +1,11 @@
+﻿.anna/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.venv/
+dist/
+build/
+outputs/*.png
+outputs/*.csv
+bundle/anna-tool-ids.js

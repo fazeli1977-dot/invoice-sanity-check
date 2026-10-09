@@ -1,6 +1,11 @@
 {
-  "name": "invoice-sanity-check",
-  "tagline": "TODO",
-  "description": "TODO",
-  "category": "productivity"
+    "name":  "invoice-sanity-check",
+    "tagline":  "Deterministic invoice arithmetic validation",
+    "description":  "Validate invoice line items, subtotals, tax calculations, and final totals using exact Decimal arithmetic. Enter an invoice number, line items, quantities, unit prices, subtotal, tax, and total to identify arithmetic inconsistencies before processing or payment.",
+    "category":  "productivity",
+    "bundled_executas":  {
+                             "invoice-sanity-check":  {
+                                                          "path":  "executas/invoice-sanity-check"
+                                                      }
+                         }
 }
