@@ -1,4 +1,4 @@
-﻿"""Invoice checks for the Anna App. One JSON-RPC request per input line."""
+"""Invoice checks for the Anna App. One JSON-RPC request per input line."""
 
 import json
 import sys
@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 MANIFEST = {
     "name": "tool-dev-invoice-sanity-check",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "tools": [
         {
             "name": "ping",

@@ -7,5 +7,6 @@
                              "invoice-sanity-check":  {
                                                           "path":  "executas/invoice-sanity-check"
                                                       }
-                         }
+                         },
+    "slug":  "invoice-sanity-check"
 }

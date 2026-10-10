@@ -1,0 +1,9 @@
+{
+    "slug":  "invoice-sanity-check",
+    "name":  "invoice-sanity-check",
+    "version":  "0.1.1",
+    "executa_type":  "tool",
+    "description":  "Validate invoice arithmetic using exact Decimal calculations.",
+    "tool_id":  "tool-dev-invoice-sanity-check",
+    "type":  "python"
+}

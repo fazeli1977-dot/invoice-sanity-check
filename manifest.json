@@ -2,7 +2,7 @@
   "schema": 2,
   "required_executas": [
     {
-      "tool_id": "tool-dev-invoice-sanity-check"
+      "tool_id": "tool-naomi197-invoice-sanity-check-qhj8bq39"
     }
   ],
   "tags": ["invoice-sanity-check"],
@@ -22,7 +22,7 @@
       }
     ],
     "host_api": {
-      "tools": ["tool-dev-invoice-sanity-check"],
+      "tools": ["tool-naomi197-invoice-sanity-check-qhj8bq39"],
       "storage": ["get", "set"],
       "window": ["set_title", "ready"]
     },
