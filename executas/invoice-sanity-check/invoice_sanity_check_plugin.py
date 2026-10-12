@@ -5,8 +5,10 @@ import sys
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 MANIFEST = {
-    "name": "tool-dev-invoice-sanity-check",
-    "version": "0.1.1",
+    "display_name": "Invoice Sanity Check",
+    "version": "0.2.1",
+    "description": "Check invoice line amounts, subtotal, tax, and total using exact Decimal arithmetic.",
+    "host_capabilities": [],
     "tools": [
         {
             "name": "ping",
@@ -126,6 +128,27 @@ def invoke(method, args):
     return {"success": False, "error": f"unknown method: {method}"}
 
 
+def dispatch(request):
+    method = request.get("method")
+    if method == "initialize":
+        return {
+            "protocolVersion": "2.0",
+            "server_info": {
+                "name": MANIFEST["display_name"],
+                "version": MANIFEST["version"],
+            },
+            "capabilities": {},
+        }
+    if method == "describe":
+        return MANIFEST
+    if method == "health":
+        return {"status": "ready"}
+    if method == "invoke":
+        params = request.get("params", {})
+        return invoke(params.get("tool", ""), params.get("arguments", {}))
+    raise ValueError(f"unknown rpc: {method}")
+
+
 def main():
     for line in sys.stdin:
         if not line.strip():
@@ -134,16 +157,7 @@ def main():
         try:
             request = json.loads(line)
             request_id = request.get("id")
-            method = request.get("method")
-            if method == "describe":
-                result = MANIFEST
-            elif method == "health":
-                result = {"status": "ready"}
-            elif method == "invoke":
-                params = request["params"]
-                result = invoke(params["tool"], params.get("arguments", {}))
-            else:
-                raise ValueError(f"unknown rpc: {method}")
+            result = dispatch(request)
             response = {"jsonrpc": "2.0", "id": request_id, "result": result}
         except Exception as error:
             response = {

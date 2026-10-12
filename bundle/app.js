@@ -1,6 +1,11 @@
 ﻿import { AnnaAppRuntime } from "/static/anna-apps/_sdk/latest/index.js";
 
-const TOOL_ID = "tool-dev-invoice-sanity-check";
+const DEV_FALLBACK_TOOL_ID = "tool-dev-invoice-sanity-check";
+const TOOL_ID =
+  (typeof window !== "undefined" &&
+    window.__ANNA_TOOL_IDS__ &&
+    window.__ANNA_TOOL_IDS__["invoice-sanity-check"]) ||
+  DEV_FALLBACK_TOOL_ID;
 
 let anna = null;
 let itemCounter = 0;

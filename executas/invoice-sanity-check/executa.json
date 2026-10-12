@@ -1,9 +1,10 @@
 {
     "slug":  "invoice-sanity-check",
     "name":  "invoice-sanity-check",
-    "version":  "0.1.1",
+    "version":  "0.2.1",
     "executa_type":  "tool",
     "description":  "Validate invoice arithmetic using exact Decimal calculations.",
-    "tool_id":  "tool-dev-invoice-sanity-check",
+    "tool_id":  "tool-naomi197-invoice-sanity-check-qhj8bq39",
+    "enabled":  true,
     "type":  "python"
 }

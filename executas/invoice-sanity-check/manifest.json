@@ -1,0 +1,45 @@
+{
+  "display_name": "Invoice Sanity Check",
+  "version": "0.2.1",
+  "description": "Check invoice line amounts, subtotal, tax, and total using exact Decimal arithmetic.",
+  "tools": [
+    {
+      "name": "ping",
+      "description": "Smoke-test method.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_invoice",
+      "description": "Check invoice line amounts, subtotal, tax, and total.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "invoice_number": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "quantity": { "type": "number" },
+                "unit_price": { "type": "number" },
+                "amount": { "type": "number" }
+              },
+              "required": ["quantity", "unit_price", "amount"]
+            }
+          },
+          "subtotal": { "type": "number" },
+          "tax": { "type": "number" },
+          "total": { "type": "number" }
+        },
+        "required": ["invoice_number", "items", "subtotal", "tax", "total"]
+      }
+    }
+  ],
+  "credentials": [],
+  "host_capabilities": [],
+  "runtime": { "type": "python" }
+}

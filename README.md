@@ -15,14 +15,28 @@ A deterministic invoice validation mini-app and Executa built for the **Anna AI 
 ## Project Structure
 ```text
 invoice-sanity-check/
-├── manifest.json
-├── app.json
+├── manifest.json          # App manifest: UI bundle, views, host_api ACL, bundled executa refs
+├── app.json               # Listing metadata + bundled_executas handle → path map
 ├── bundle/
-│   ├── index.html
-│   └── app.js
+│   ├── index.html         # SPA entry; loads anna-tool-ids.js then app.js
+│   └── app.js             # Resolves the tool id from window.__ANNA_TOOL_IDS__
 ├── executas/
-│   └── invoice-sanity-check-plugin/
-│       ├── manifest.json
-│       ├── requirements.txt
-│       └── invoice_sanity_check_plugin.py
+│   └── invoice-sanity-check/
+│       ├── executa.json              # Dev identity (tool_id, type, enabled)
+│       ├── pyproject.toml            # name + [project.scripts] key == minted tool_id
+│       ├── uv.lock
+│       └── invoice_sanity_check_plugin.py   # stdio JSON-RPC tool plugin (describe/invoke)
+├── tests/
+│   └── test_invoice_sanity_check_plugin.py
+├── acltest.mjs            # Regression check: bundle tool id vs manifest ACL
 └── README.md
+```
+
+## How the tool id is wired
+The frontend never hardcodes a tool id. `anna-app apps publish` / `anna-app dev`
+resolve the `bundled:invoice-sanity-check` handle declared in `manifest.json` to the
+server-minted `tool_id` and write `bundle/anna-tool-ids.js`
+(`window.__ANNA_TOOL_IDS__`). `bundle/app.js` reads that mapping at runtime, and
+`bundle/index.html` loads the sidecar before `app.js`. Keep the `[project].name`
+and the `[project.scripts]` key in `executas/invoice-sanity-check/pyproject.toml`
+equal to the minted `tool_id`.
