@@ -53,9 +53,12 @@ jobs:
         working-directory: executas/invoice-sanity-check
         env:
           TOOL_ID: tool-naomi197-invoice-sanity-check-qhj8bq39
+          EXT: ${{ matrix.ext }}
+        shell: bash
         run: |
           pyinstaller --onefile --clean --noupx --name "$TOOL_ID" invoice_sanity_check_plugin.py
-          ls -la dist
+          test -f "dist/$TOOL_ID$EXT"
+          ls -l dist
 
       - name: Smoke test (describe + invoke)
         working-directory: executas/invoice-sanity-check
