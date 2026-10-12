@@ -1,6 +1,6 @@
 {
     "name":  "invoice-sanity-check",
-    "version":  "0.2.1",
+    "version":  "0.2.2",
     "tagline":  "Deterministic invoice arithmetic validation",
     "description":  "Validate invoice line items, subtotals, tax calculations, and final totals using exact Decimal arithmetic. Enter an invoice number, line items, quantities, unit prices, subtotal, tax, and total to identify arithmetic inconsistencies before processing or payment.",
     "category":  "productivity",

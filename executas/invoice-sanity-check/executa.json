@@ -1,10 +1,46 @@
 {
     "slug":  "invoice-sanity-check",
     "name":  "invoice-sanity-check",
-    "version":  "0.2.1",
+    "version":  "0.2.2",
     "executa_type":  "tool",
     "description":  "Validate invoice arithmetic using exact Decimal calculations.",
     "tool_id":  "tool-naomi197-invoice-sanity-check-qhj8bq39",
     "enabled":  true,
-    "type":  "python"
+    "type":  "python",
+    "distribution":  {
+        "active":  "binary",
+        "profiles":  {
+            "local":  {
+                "type":  "local",
+                "supports_protocol":  true
+            },
+            "binary":  {
+                "type":  "binary",
+                "executable_name":  "tool-naomi197-invoice-sanity-check-qhj8bq39",
+                "supports_protocol":  true,
+                "binary_urls":  {
+                    "darwin-arm64":  {
+                        "url":  "https://github.com/naomi197/invoice-sanity-check/releases/download/invoice-sanity-check-v0.2.2/tool-naomi197-invoice-sanity-check-qhj8bq39-darwin-arm64.tar.gz",
+                        "entrypoint":  "tool-naomi197-invoice-sanity-check-qhj8bq39",
+                        "format":  "tar.gz"
+                    },
+                    "darwin-x86_64":  {
+                        "url":  "https://github.com/naomi197/invoice-sanity-check/releases/download/invoice-sanity-check-v0.2.2/tool-naomi197-invoice-sanity-check-qhj8bq39-darwin-x86_64.tar.gz",
+                        "entrypoint":  "tool-naomi197-invoice-sanity-check-qhj8bq39",
+                        "format":  "tar.gz"
+                    },
+                    "linux-x86_64":  {
+                        "url":  "https://github.com/naomi197/invoice-sanity-check/releases/download/invoice-sanity-check-v0.2.2/tool-naomi197-invoice-sanity-check-qhj8bq39-linux-x86_64.tar.gz",
+                        "entrypoint":  "tool-naomi197-invoice-sanity-check-qhj8bq39",
+                        "format":  "tar.gz"
+                    },
+                    "windows-x86_64":  {
+                        "url":  "https://github.com/naomi197/invoice-sanity-check/releases/download/invoice-sanity-check-v0.2.2/tool-naomi197-invoice-sanity-check-qhj8bq39-windows-x86_64.tar.gz",
+                        "entrypoint":  "tool-naomi197-invoice-sanity-check-qhj8bq39.exe",
+                        "format":  "tar.gz"
+                    }
+                }
+            }
+        }
+    }
 }

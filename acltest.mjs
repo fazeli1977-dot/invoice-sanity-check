@@ -18,7 +18,18 @@ const appJs = readFileSync("bundle/app.js", "utf-8");
 const html = readFileSync("bundle/index.html", "utf-8");
 
 const minted = resolved["invoice-sanity-check"];
+const executa = JSON.parse(readFileSync("executas/invoice-sanity-check/executa.json", "utf-8"));
+const dist = executa.distribution;
+const activeProfile = dist?.profiles?.[dist?.active];
 const checks = [
+  ["executa declares a distribution block (not dev-only)", Boolean(dist)],
+  ["active distribution profile is installable (not local)", Boolean(activeProfile) && activeProfile.type !== "local"],
+  [
+    "binary profile ships an https URL for every declared platform",
+    activeProfile?.type === "binary" &&
+      Object.values(activeProfile.binary_urls || {}).every((a) => /^https:\/\//.test(a.url || "")),
+  ],
+  ["binary executable_name matches the minted tool id", activeProfile?.executable_name === executa.tool_id],
   ["sidecar maps handle to a minted tool id", /^tool-/.test(minted || "")],
   ["app.js resolves id from window.__ANNA_TOOL_IDS__", appJs.includes("__ANNA_TOOL_IDS__")],
   ["index.html loads anna-tool-ids.js", html.includes("anna-tool-ids.js")],

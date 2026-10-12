@@ -17,12 +17,14 @@ A deterministic invoice validation mini-app and Executa built for the **Anna AI 
 invoice-sanity-check/
 ├── manifest.json          # App manifest: UI bundle, views, host_api ACL, bundled executa refs
 ├── app.json               # Listing metadata + bundled_executas handle → path map
+├── .github/workflows/
+│   └── build-executa.yml  # PyInstaller per-platform build → GitHub Release assets
 ├── bundle/
 │   ├── index.html         # SPA entry; loads anna-tool-ids.js then app.js
 │   └── app.js             # Resolves the tool id from window.__ANNA_TOOL_IDS__
 ├── executas/
 │   └── invoice-sanity-check/
-│       ├── executa.json              # Dev identity (tool_id, type, enabled)
+│       ├── executa.json              # Dev identity + `distribution` (binary URLs)
 │       ├── pyproject.toml            # name + [project.scripts] key == minted tool_id
 │       ├── uv.lock
 │       └── invoice_sanity_check_plugin.py   # stdio JSON-RPC tool plugin (describe/invoke)
@@ -40,3 +42,19 @@ server-minted `tool_id` and write `bundle/anna-tool-ids.js`
 `bundle/index.html` loads the sidecar before `app.js`. Keep the `[project].name`
 and the `[project.scripts]` key in `executas/invoice-sanity-check/pyproject.toml`
 equal to the minted `tool_id`.
+
+## How the tool is installed on an Agent
+
+`executas/invoice-sanity-check/executa.json` carries a `distribution` block. Without
+one the Executa is **dev-only**: `anna-app dev` runs it from this directory, but a
+published app has no locator and the Agent cannot install it — so a reviewer on a
+fresh Cloud Agent sees an error and cannot test any feature.
+
+The active profile is `binary`: the Agent downloads a self-contained PyInstaller
+binary per `{os, arch}` from the GitHub Release `invoice-sanity-check-v<version>`,
+verified by sha256 (pinned at `apps cut`). `.github/workflows/build-executa.yml`
+builds and attaches those assets; run it with **Actions → Build Executa binaries →
+Run workflow** (or push a matching tag) before publishing a new version.
+
+The `local` profile is kept for the dev loop (`anna-app apps push --profile local`).
+`acltest.mjs` fails if the active profile ever regresses to `local`/dev-only.

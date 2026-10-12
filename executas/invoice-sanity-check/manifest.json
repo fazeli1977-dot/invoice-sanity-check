@@ -1,6 +1,6 @@
 {
   "display_name": "Invoice Sanity Check",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Check invoice line amounts, subtotal, tax, and total using exact Decimal arithmetic.",
   "tools": [
     {
