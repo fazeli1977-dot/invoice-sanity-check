@@ -50,7 +50,7 @@ jobs:
         run: python -m pip install --upgrade pip pyinstaller pytest
 
       - name: Run plugin and distribution tests
-        run: python -m pytest tests/test_invoice_sanity_check_plugin.py
+        run: python -m pytest -q tests/test_invoice_sanity_check_plugin.py
 
       - name: Build binary
         working-directory: executas/invoice-sanity-check
