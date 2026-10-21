@@ -58,3 +58,10 @@ Run workflow** (or push a matching tag) before publishing a new version.
 
 The `local` profile is kept for the dev loop (`anna-app apps push --profile local`).
 `acltest.mjs` fails if the active profile ever regresses to `local`/dev-only.
+
+Before submitting a release, run `python -m pytest tests/test_invoice_sanity_check_plugin.py`.
+The distribution regression test checks that every declared URL uses the current
+tool id, version tag, platform archive name, and executable entrypoint. If an app
+was already cut with stale Executa metadata, publish a fresh version after its
+release assets are publicly downloadable, then cut and submit that version and
+verify it with a fresh install.

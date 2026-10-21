@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 MANIFEST = {
     "display_name": "Invoice Sanity Check",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Check invoice line amounts, subtotal, tax, and total using exact Decimal arithmetic.",
     "host_capabilities": [],
     "tools": [

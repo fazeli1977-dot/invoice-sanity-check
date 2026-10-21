@@ -1,5 +1,7 @@
-﻿import sys
+import json
+import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
 
@@ -103,3 +105,31 @@ def test_invoke_returns_validation_error_without_raising():
 
     assert result["success"] is False
     assert result["error"] == "invoice_number is required"
+
+
+def test_binary_distribution_urls_match_release_assets():
+    executa = json.loads((SOURCE_DIR / "executa.json").read_text(encoding="utf-8"))
+    tool_id = executa["tool_id"]
+    distribution = executa["distribution"]
+
+    assert distribution["active"] == "binary"
+    binary = distribution["profiles"]["binary"]
+    assert binary["executable_name"] == tool_id
+    assert set(binary["binary_urls"]) == {
+        "darwin-arm64",
+        "darwin-x86_64",
+        "linux-x86_64",
+        "windows-x86_64",
+    }
+
+    release_tag = f'{executa["slug"]}-v{executa["version"]}'
+    for platform, asset in binary["binary_urls"].items():
+        archive_name = f"{tool_id}-{platform}.tar.gz"
+        parsed_url = urlsplit(asset["url"])
+
+        assert parsed_url.netloc == "github.com"
+        assert parsed_url.path.endswith(
+            f"/releases/download/{release_tag}/{archive_name}"
+        )
+        expected_entrypoint = tool_id + (".exe" if platform == "windows-x86_64" else "")
+        assert asset["entrypoint"] == expected_entrypoint

@@ -46,8 +46,11 @@ jobs:
           python-version: "3.12"
           architecture: ${{ matrix.python_arch || '' }}
 
-      - name: Install PyInstaller
-        run: python -m pip install --upgrade pip pyinstaller
+      - name: Install PyInstaller and pytest
+        run: python -m pip install --upgrade pip pyinstaller pytest
+
+      - name: Run plugin and distribution tests
+        run: python -m pytest tests/test_invoice_sanity_check_plugin.py
 
       - name: Build binary
         working-directory: executas/invoice-sanity-check
