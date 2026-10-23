@@ -1,45 +1,91 @@
 {
+  "name": "tool-naomi197-invoice-sanity-check-qhj8bq39",
   "display_name": "Invoice Sanity Check",
-  "version": "0.2.3",
-  "description": "Check invoice line amounts, subtotal, tax, and total using exact Decimal arithmetic.",
+  "version": "0.3.0",
+  "description": "Check invoice line amounts, subtotal, tax, and total using exact Decimal arithmetic. The result of check_invoice is the only pass or fail.",
+  "author": "fazeli1977-dot",
+  "homepage": "https://github.com/fazeli1977-dot/invoice-sanity-check",
+  "category": "productivity",
+  "license": "MIT",
+  "credentials": [],
   "tools": [
     {
       "name": "ping",
       "description": "Smoke-test method.",
-      "parameters": {
-        "type": "object",
-        "properties": {},
-        "additionalProperties": false
-      }
+      "parameters": []
     },
     {
       "name": "check_invoice",
-      "description": "Check invoice line amounts, subtotal, tax, and total.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "invoice_number": { "type": "string" },
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "quantity": { "type": "number" },
-                "unit_price": { "type": "number" },
-                "amount": { "type": "number" }
-              },
-              "required": ["quantity", "unit_price", "amount"]
-            }
-          },
-          "subtotal": { "type": "number" },
-          "tax": { "type": "number" },
-          "total": { "type": "number" }
+      "description": "Deterministically check invoice line amounts (quantity x unit price), the subtotal, an optional tax rate and the total. Returns valid=true/false and a list of issues.",
+      "parameters": [
+        {
+          "name": "invoice_number",
+          "type": "string",
+          "description": "Invoice number, e.g. INV-2026-001.",
+          "required": true
         },
-        "required": ["invoice_number", "items", "subtotal", "tax", "total"]
-      }
+        {
+          "name": "items",
+          "type": "array",
+          "description": "Line items. Each item is an object with quantity, unit_price, amount and an optional description.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "number"
+              },
+              "unit_price": {
+                "type": "number"
+              },
+              "amount": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "quantity",
+              "unit_price",
+              "amount"
+            ]
+          },
+          "required": true
+        },
+        {
+          "name": "subtotal",
+          "type": "number",
+          "description": "Stated subtotal. Omit to skip the stated-subtotal check.",
+          "required": false
+        },
+        {
+          "name": "tax_rate",
+          "type": "number",
+          "description": "Optional tax rate in percent (e.g. 10 for 10%).",
+          "required": false
+        },
+        {
+          "name": "tax",
+          "type": "number",
+          "description": "Stated tax amount. Defaults to 0 when no tax_rate is given.",
+          "required": false
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "description": "Stated invoice total.",
+          "required": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "description": "Optional currency code, e.g. USD. Echoed in the result.",
+          "required": false
+        }
+      ]
     }
   ],
-  "credentials": [],
-  "host_capabilities": [],
-  "runtime": { "type": "python" }
+  "runtime": {
+    "type": "binary"
+  }
 }

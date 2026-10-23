@@ -8,7 +8,7 @@ import pytest
 SOURCE_DIR = Path(__file__).parents[1] / "executas" / "invoice-sanity-check"
 sys.path.insert(0, str(SOURCE_DIR))
 
-from invoice_sanity_check_plugin import check_invoice, invoke, money
+from invoice_sanity_check_plugin import MANIFEST, check_invoice, dispatch, invoke, money
 
 
 def valid_invoice():
@@ -133,3 +133,71 @@ def test_binary_distribution_urls_match_release_assets():
         )
         expected_entrypoint = tool_id + (".exe" if platform == "windows-x86_64" else "")
         assert asset["entrypoint"] == expected_entrypoint
+
+
+def test_describe_matches_executa_protocol():
+    executa = json.loads((SOURCE_DIR / "executa.json").read_text(encoding="utf-8"))
+    described = dispatch({"method": "describe"})
+
+    assert described["name"] == executa["tool_id"]
+    assert described["version"] == executa["version"]
+    for tool in described["tools"]:
+        assert isinstance(tool["parameters"], list)
+        for parameter in tool["parameters"]:
+            assert {"name", "type", "description"} <= set(parameter)
+    shipped = json.loads((SOURCE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    assert shipped == json.loads(json.dumps(MANIFEST))
+
+
+def test_versions_are_consistent():
+    app = json.loads((SOURCE_DIR.parents[1] / "app.json").read_text(encoding="utf-8"))
+    executa = json.loads((SOURCE_DIR / "executa.json").read_text(encoding="utf-8"))
+    assert app["version"] == executa["version"] == MANIFEST["version"]
+
+
+def test_fractional_quantity_is_not_rounded_to_cents():
+    result = check_invoice(
+        {
+            "invoice_number": "INV-2",
+            "items": [{"quantity": 0.333, "unit_price": 3, "amount": 1.00}],
+            "subtotal": 1.00,
+            "total": 1.00,
+        }
+    )
+    assert result["valid"] is True
+
+
+def test_tax_rate_is_applied_to_calculated_subtotal():
+    invoice = valid_invoice()
+    invoice.pop("tax")
+    invoice["tax_rate"] = 18
+    invoice["total"] = 43.07
+    result = check_invoice(invoice)
+    assert result["valid"] is True
+    assert result["calculated_tax"] == "6.57"
+
+
+def test_wrong_tax_for_rate_is_reported():
+    invoice = valid_invoice()
+    invoice["tax_rate"] = 10
+    result = check_invoice(invoice)
+    assert result["valid"] is False
+    assert any("Stated tax" in issue for issue in result["issues"])
+
+
+def test_optional_subtotal_and_tax_may_be_omitted():
+    result = check_invoice(
+        {
+            "invoice_number": "INV-3",
+            "items": [{"quantity": 1, "unit_price": 9.99, "amount": 9.99}],
+            "total": 9.99,
+        }
+    )
+    assert result["valid"] is True
+
+
+def test_invalid_tax_rate_is_rejected():
+    invoice = valid_invoice()
+    invoice["tax_rate"] = 150
+    with pytest.raises(ValueError, match="tax_rate"):
+        check_invoice(invoice)

@@ -16,7 +16,9 @@ A deterministic invoice validation mini-app and Executa built for the **Anna AI 
 ```text
 invoice-sanity-check/
 ├── manifest.json          # App manifest: UI bundle, views, host_api ACL, bundled executa refs
-├── app.json               # Listing metadata + bundled_executas handle → path map
+├── app.json               # Listing metadata (description, logo, screenshots) + bundled_executas
+├── assets/logo.svg        # Store logo
+├── screenshots/           # Store listing screenshots
 ├── .github/workflows/
 │   └── build-executa.yml  # PyInstaller per-platform build → GitHub Release assets
 ├── bundle/
@@ -65,3 +67,8 @@ tool id, version tag, platform archive name, and executable entrypoint. If an ap
 was already cut with stale Executa metadata, publish a fresh version after its
 release assets are publicly downloadable, then cut and submit that version and
 verify it with a fresh install.
+
+## Executa protocol notes
+`describe` must return a top-level `name` equal to the minted tool id and `parameters` as a **list** of
+`{name, type, description, required}` entries (not a JSON-Schema object). The archive-root `manifest.json`
+in each release asset uses the same `name`. `tests/` asserts this, and the CI smoke test checks it against the built binary.

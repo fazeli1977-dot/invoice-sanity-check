@@ -38,7 +38,7 @@
     "form_factors": ["desktop"]
   },
   "dev": {
-    "fixtures": ["fixtures/*.jsonl"],
+    "fixtures": [],
     "seed_storage": {},
     "user_id": 1
   }

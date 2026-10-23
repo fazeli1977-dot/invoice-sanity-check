@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -23,19 +23,27 @@
     .header p { color: var(--text-muted); font-size: 12px; }
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
     .section-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .hint { color: var(--text-muted); font-size: 11px; margin-bottom: 8px; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .field { margin-bottom: 8px; }
     .field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-    input { width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; outline: none; }
-    input:focus { border-color: var(--primary); }
-    .item-row { background: #0b1120; border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 8px; position: relative; }
+    input, textarea { width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; outline: none; }
+    textarea { min-height: 90px; resize: vertical; font-family: ui-monospace, Consolas, monospace; }
+    input:focus, textarea:focus { border-color: var(--primary); }
+    .item-row { background: #0b1120; border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 8px; }
     .item-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 6px; }
+    .item-actions { text-align: right; margin-top: 4px; }
     .btn { background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; }
     .btn:hover { background: var(--primary-hover); }
+    .btn:disabled { opacity: 0.6; cursor: wait; }
     .btn-sm { padding: 4px 8px; font-size: 11px; }
+    .btn-secondary { background: transparent; border: 1px solid var(--primary); color: #93c5fd; }
+    .btn-secondary:hover { background: rgba(59, 130, 246, 0.2); }
     .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
     .btn-danger:hover { background: var(--danger); color: #fff; }
     .btn-block { width: 100%; padding: 8px; margin-top: 8px; font-size: 13px; }
+    .row-gap { display: flex; gap: 8px; margin-top: 8px; }
     #status { padding: 10px; border-radius: 6px; font-size: 12px; white-space: pre-line; display: none; margin-top: 8px; }
     #status.success { display: block; background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); color: #86efac; }
     #status.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
@@ -45,13 +53,29 @@
 <body>
   <div class="header">
     <h2>Invoice Sanity Check</h2>
-    <p>Validate invoice line-items, tax, and totals</p>
+    <p>Deterministic validation of line amounts, subtotal, tax, and total</p>
   </div>
 
   <div class="card">
-    <div class="field">
-      <label>Invoice Number</label>
-      <input id="invoice-number" type="text" value="INV-2026-001" placeholder="INV-001" />
+    <div class="section-title"><span>Paste invoice text (optional)</span></div>
+    <p class="hint">Labeled lines such as "Subtotal: 250.00" are read directly. Other text can be turned into form fields by a model; the pass/fail result is always computed in code.</p>
+    <textarea id="paste-text" placeholder="Invoice INV-2026-001&#10;Development Service  2.5 x 100.00 = 250.00&#10;Subtotal: 250.00&#10;Tax (10%): 25.00&#10;Total: 275.00"></textarea>
+    <div class="row-gap">
+      <button id="fill-btn" class="btn btn-secondary btn-sm" type="button">Fill form from text</button>
+      <button id="sample-btn" class="btn btn-secondary btn-sm" type="button">Load sample with an error</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="form-grid">
+      <div class="field">
+        <label for="invoice-number">Invoice Number</label>
+        <input id="invoice-number" type="text" value="INV-2026-001" placeholder="INV-001" />
+      </div>
+      <div class="field">
+        <label for="currency">Currency</label>
+        <input id="currency" type="text" value="USD" maxlength="8" placeholder="USD" />
+      </div>
     </div>
   </div>
 
@@ -64,22 +88,26 @@
   </div>
 
   <div class="card">
-    <div class="form-grid">
+    <div class="form-grid-3">
       <div class="field">
-        <label>Subtotal ($)</label>
+        <label for="subtotal">Stated Subtotal</label>
         <input id="subtotal" type="number" step="0.01" value="250.00" />
       </div>
       <div class="field">
-        <label>Tax ($)</label>
+        <label for="tax-rate">Tax rate % (optional)</label>
+        <input id="tax-rate" type="number" step="0.01" value="10" />
+      </div>
+      <div class="field">
+        <label for="tax">Stated Tax</label>
         <input id="tax" type="number" step="0.01" value="25.00" />
       </div>
     </div>
     <div class="field">
-      <label>Total ($)</label>
+      <label for="total">Stated Total</label>
       <input id="total" type="number" step="0.01" value="275.00" />
     </div>
     <button id="check-btn" class="btn btn-block" type="button">Check Invoice</button>
-    <div id="status"></div>
+    <div id="status" role="status" aria-live="polite"></div>
   </div>
 
   <script src="./anna-tool-ids.js" defer></script>

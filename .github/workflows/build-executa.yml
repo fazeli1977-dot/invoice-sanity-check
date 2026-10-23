@@ -36,7 +36,7 @@ jobs:
           # macOS x86_64 builds on an Apple Silicon runner via Rosetta 2
           # (x64 Python) — the Intel `macos-13` runner is retired.
           - { os: macos-15, platform: darwin-x86_64, python_arch: x64, ext: "" }
-          - { os: ubuntu-latest, platform: linux-x86_64, ext: "" }
+          - { os: ubuntu-22.04, platform: linux-x86_64, ext: "" }
           - { os: windows-latest, platform: windows-x86_64, ext: ".exe" }
     steps:
       - uses: actions/checkout@v4
@@ -72,7 +72,7 @@ jobs:
         run: |
           out="$(printf '%s\n' '{"jsonrpc":"2.0","method":"describe","id":1}' | "./dist/$TOOL_ID$EXT")"
           echo "describe → $out"
-          printf '%s' "$out" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'check_invoice' in [t['name'] for t in d['result']['tools']]; print('describe ok')"
+          printf '%s' "$out" | python3 -c "import sys,json; d=json.load(sys.stdin); r=d['result']; assert r['name']=='$TOOL_ID' and 'check_invoice' in [t['name'] for t in r['tools']] and isinstance(r['tools'][1]['parameters'], list); print('describe ok')"
           inv="$(printf '%s\n' '{"jsonrpc":"2.0","method":"invoke","id":2,"params":{"tool":"check_invoice","arguments":{"invoice_number":"INV-1","items":[{"quantity":2.5,"unit_price":100,"amount":250}],"subtotal":250,"tax":25,"total":275}}}' | "./dist/$TOOL_ID$EXT")"
           echo "invoke → $inv"
           printf '%s' "$inv" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d['result']['success'] and d['result']['data']['valid']; print('invoke ok')"
