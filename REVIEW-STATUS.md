@@ -58,11 +58,12 @@
 - Saved and verified the public DoraHacks description: accurate arithmetic
   scope, current Anna handle/version, Cloud verification and pending review.
   All three original screenshots remain present; team GitHub spelling fixed.
+- Source fixes committed and pushed to the existing GitHub master branch;
+  previous v0.3.0 history preserved (merge commit 41e4f88).
 
 ## Required before claiming completion
 
 1. Await Anna reviewers' decision; submission is pending, not approval.
-2. Commit and push the prepared source changes to GitHub (explicitly authorized).
 
 The original account's failure logs are unavailable. The migrated candidate
 successfully installs and runs on the new account's real Cloud Agent.
