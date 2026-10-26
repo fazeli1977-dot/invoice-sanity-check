@@ -1,13 +1,22 @@
 {
-    "name":  "invoice-sanity-check",
-    "version":  "0.2.3",
-    "tagline":  "Deterministic invoice arithmetic validation",
-    "description":  "Validate invoice line items, subtotals, tax calculations, and final totals using exact Decimal arithmetic. Enter an invoice number, line items, quantities, unit prices, subtotal, tax, and total to identify arithmetic inconsistencies before processing or payment.",
-    "category":  "productivity",
-    "bundled_executas":  {
-                             "invoice-sanity-check":  {
-                                                          "path":  "executas/invoice-sanity-check"
-                                                      }
-                         },
-    "slug":  "invoice-sanity-check"
+  "name": "invoice-sanity-check",
+  "slug": "invoice-sanity-check",
+  "version": "0.3.1",
+  "changelog": "Migrate to the current developer account, fix model-assisted invoice import, and verify bundled release executables before publication.",
+  "tagline": "Deterministic invoice arithmetic validation",
+  "description": "Invoice Sanity Check finds arithmetic, tax, and total errors in an invoice before it is paid. It reads a pasted invoice or manual line items and checks every number with exact Decimal arithmetic in code. A model may only copy fields out of unstructured text; it never decides whether the invoice passes.\n\nWHAT IT CHECKS\n- Each line amount: quantity x unit price, rounded to cents only after the multiplication (half-up).\n- The subtotal: the sum of the calculated line amounts.\n- Tax: an optional tax rate in percent applied to the calculated subtotal, compared with the stated tax.\n- The total: calculated subtotal plus tax, compared with the stated total.\n- Input sanity: a non-empty invoice number, valid numbers, no negative values, 1 to 100 line items.\n\nHOW TO USE IT\n1. Type the invoice number, currency, line descriptions, quantities, unit prices, and stated amounts. Enter the stated subtotal, tax rate, tax, and total.\n2. Or paste invoice text and click \"Fill form from text\". Labeled lines such as \"Subtotal: 250.00\" are read directly; other text is copied into the form by a model. Review the fields before checking.\n3. Click \"Check Invoice\". The result is PASS or FAIL with each mismatch explained, for example \"Stated total 505.97 does not match subtotal plus tax 505.98\".\n\nWHY IT IS TRUSTWORTHY\nThe same numbers always give the same result. The check runs in a bundled Executa (a self-contained binary for macOS, Linux and Windows), so no floating-point drift and no model opinion is involved. Manual entry and labeled-text import need no model. If model-assisted import is used, the pasted text is sent to Anna's configured model service. Review the extracted fields before checking. This app validates arithmetic only; it does not certify tax-law compliance or invoice authenticity.",
+  "category": "productivity",
+  "logo_file": "assets/logo.svg",
+  "screenshots": [
+    "screenshots/01-invoice-form.png",
+    "screenshots/02-pass-result.png",
+    "screenshots/03-fail-result.png"
+  ],
+  "homepage_url": "https://github.com/fazeli1977-dot/invoice-sanity-check",
+  "support_url": "https://github.com/fazeli1977-dot/invoice-sanity-check/issues",
+  "bundled_executas": {
+    "invoice-sanity-check": {
+      "path": "executas/invoice-sanity-check"
+    }
+  }
 }

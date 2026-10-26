@@ -16,7 +16,9 @@ A deterministic invoice validation mini-app and Executa built for the **Anna AI 
 ```text
 invoice-sanity-check/
 ├── manifest.json          # App manifest: UI bundle, views, host_api ACL, bundled executa refs
-├── app.json               # Listing metadata + bundled_executas handle → path map
+├── app.json               # Listing metadata (description, logo, screenshots) + bundled_executas
+├── assets/logo.svg        # Store logo
+├── screenshots/           # Store listing screenshots
 ├── .github/workflows/
 │   └── build-executa.yml  # PyInstaller per-platform build → GitHub Release assets
 ├── bundle/
@@ -39,9 +41,14 @@ The frontend never hardcodes a tool id. `anna-app apps publish` / `anna-app dev`
 resolve the `bundled:invoice-sanity-check` handle declared in `manifest.json` to the
 server-minted `tool_id` and write `bundle/anna-tool-ids.js`
 (`window.__ANNA_TOOL_IDS__`). `bundle/app.js` reads that mapping at runtime, and
-`bundle/index.html` loads the sidecar before `app.js`. Keep the `[project].name`
-and the `[project.scripts]` key in `executas/invoice-sanity-check/pyproject.toml`
-equal to the minted `tool_id`.
+`bundle/index.html` loads the sidecar before `app.js`.
+
+The registry identity is account-specific. The migrated account uses
+`tool-alireza-invoice-sanity-check-jrqmux6d`; the existing v0.3.0 release archives
+keep their original executable/package name. This is supported by Anna: the
+installer identifies the plugin using the server-provided `tool_id`, while
+`executable_name` and each asset's `entrypoint` locate the packaged executable.
+Never replace the frontend mapping with the legacy executable name.
 
 ## How the tool is installed on an Agent
 
@@ -65,3 +72,35 @@ tool id, version tag, platform archive name, and executable entrypoint. If an ap
 was already cut with stale Executa metadata, publish a fresh version after its
 release assets are publicly downloadable, then cut and submit that version and
 verify it with a fresh install.
+
+## Executa protocol notes
+`describe` must return a top-level `name` and `parameters` as a **list** of
+`{name, type, description, required}` entries (not a JSON-Schema object). The archive-root `manifest.json`
+in each release asset uses the same `name`. `tests/` asserts this, and the CI smoke test checks it against the built binary.
+
+## Validation and publication
+
+Use this repository root (`D:\github_backup\invoice-sanity-check`) for future
+work. The nested `invoice-sanity-check/` checkout is retained as the previous
+account's copy; do not publish from it. Previous local identity files are backed
+up under the ignored `.review/previous-account/` directory.
+
+Install the pinned developer tooling with `npm ci`, then run:
+
+```sh
+npm run validate
+npm run test:acl
+python -m pytest -q tests
+python scripts/verify_executa.py path/to/platform-release.tar.gz --version 0.3.0
+```
+
+The executable verifier unpacks a fresh archive, performs initialize/describe,
+health and ping, checks passing and failing invoices, verifies error recovery in
+the same long-running process, and checks clean shutdown on stdin EOF. CI runs
+it against the packaged artifact on each native platform before uploading it.
+This is separate from the required final test: install a fresh draft on an Anna
+Cloud Agent, open its UI, and run the manual-entry and paste-text flows there.
+
+The installed executable and app UI have separate version histories. When only
+the UI changes, bump the app version; rebuild and bump the Executa only when its
+source or package changes. Publish/cut after the referenced assets are available.

@@ -1,0 +1,12 @@
+{
+  "name": "invoice-sanity-check-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "anna-app validate --strict",
+    "test:acl": "node acltest.mjs"
+  },
+  "devDependencies": {
+    "@anna-ai/cli": "0.1.60"
+  }
+}

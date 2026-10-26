@@ -3,8 +3,8 @@
   "required_executas": [
     {
       "tool_id": "bundled:invoice-sanity-check",
-      "min_version": "0.1.0",
-      "version": "latest"
+      "min_version": "0.3.0",
+      "version": "0.3.0"
     }
   ],
   "tags": ["invoice-sanity-check"],
@@ -38,7 +38,7 @@
     "form_factors": ["desktop"]
   },
   "dev": {
-    "fixtures": ["fixtures/*.jsonl"],
+    "fixtures": [],
     "seed_storage": {},
     "user_id": 1
   }

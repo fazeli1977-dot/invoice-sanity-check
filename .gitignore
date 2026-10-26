@@ -9,3 +9,5 @@ build/
 outputs/*.png
 outputs/*.csv
 bundle/anna-tool-ids.js
+.review/
+node_modules/

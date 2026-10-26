@@ -7,8 +7,7 @@
 // production ACL gate (mountBundle).
 //
 // Run: cd repo && node acltest.mjs
-import { mountBundle } from "file:///C:/Users/alireza%20fazeli/AppData/Roaming/npm/node_modules/@anna-ai/cli/dist/test/index.js";
-import { substituteBundledRefs } from "file:///C:/Users/alireza%20fazeli/AppData/Roaming/npm/node_modules/@anna-ai/cli/dist/bundled-executas-DvdaUh2i.js";
+import { mountBundle } from "@anna-ai/cli/test";
 import { readFileSync } from "node:fs";
 
 const raw = JSON.parse(readFileSync("manifest.json", "utf-8"));
@@ -29,14 +28,22 @@ const checks = [
     activeProfile?.type === "binary" &&
       Object.values(activeProfile.binary_urls || {}).every((a) => /^https:\/\//.test(a.url || "")),
   ],
-  ["binary executable_name matches the minted tool id", activeProfile?.executable_name === executa.tool_id],
+  ["binary executable_name matches the packaged executable identity", activeProfile?.executable_name === executa.tool_id],
   ["sidecar maps handle to a minted tool id", /^tool-/.test(minted || "")],
   ["app.js resolves id from window.__ANNA_TOOL_IDS__", appJs.includes("__ANNA_TOOL_IDS__")],
   ["index.html loads anna-tool-ids.js", html.includes("anna-tool-ids.js")],
   ["app.js does not hardcode a dev tool id as the primary id", !/const TOOL_ID\s*=\s*\"tool-dev-/.test(appJs)],
 ];
 
-const manifest = substituteBundledRefs(raw, resolved);
+// Resolve only bundled references, with the mapping emitted by the CLI.
+// Do not depend on hashed, private CLI module filenames.
+const manifest = JSON.parse(JSON.stringify(raw), (_key, value) => {
+  if (typeof value !== "string") return value;
+  return value.replace(/bundled:([a-z0-9-]+)/g, (reference, handle) => {
+    if (!resolved[handle]) throw new Error(`Unresolved bundled tool: ${handle}`);
+    return resolved[handle];
+  });
+});
 console.log("publish-time required_executas:", JSON.stringify(manifest.required_executas));
 console.log("publish-time host_api.tools:", JSON.stringify(manifest.ui.host_api.tools));
 
