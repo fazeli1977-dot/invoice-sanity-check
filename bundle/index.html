@@ -28,9 +28,10 @@
     .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .field { margin-bottom: 8px; }
     .field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-    input, textarea { width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; outline: none; }
+    input, textarea, select { width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 12px; outline: none; }
+    select { width:100%; background:#0f172a; border:1px solid var(--border); color:#fff; padding:6px 8px; border-radius:4px; font-size:12px; }
     textarea { min-height: 90px; resize: vertical; font-family: ui-monospace, Consolas, monospace; }
-    input:focus, textarea:focus { border-color: var(--primary); }
+    input:focus, textarea:focus, select:focus { border-color: var(--primary); }
     .item-row { background: #0b1120; border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 8px; }
     .item-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 6px; }
     .item-actions { text-align: right; margin-top: 4px; }
@@ -48,6 +49,16 @@
     #status.success { display: block; background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); color: #86efac; }
     #status.error { display: block; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; }
     #status.info { display: block; background: rgba(59, 130, 246, 0.15); border: 1px solid var(--primary); color: #93c5fd; }
+    .result-box { white-space: pre-wrap; border-radius: 6px; padding: 10px; font-size: 12px; line-height: 1.5; margin-top: 8px; }
+    .result-box.muted { color: var(--text-muted); background: #0f172a; border: 1px solid var(--border); }
+    .result-box.success { color: #86efac; background: rgba(34,197,94,.12); border: 1px solid var(--success); }
+    .result-box.error { color: #fca5a5; background: rgba(239,68,68,.12); border: 1px solid var(--danger); }
+    .result-box.ai-box { color: #c4b5fd; background: rgba(139,92,246,.12); border: 1px solid #8b5cf6; }
+    .result-box.loading { color: #93c5fd; border: 1px solid var(--primary); }
+    .history-row { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px; border-bottom:1px solid var(--border); color:var(--text-muted); }
+    .history-row .row-gap { margin:0; flex-shrink:0; }
+    #complaint-draft { min-height:180px; }
+    @media(max-width:560px) { .item-grid,.form-grid-3 { grid-template-columns:1fr 1fr; } .history-row { align-items:flex-start; flex-direction:column; } .row-gap { flex-wrap:wrap; } }
   </style>
 </head>
 <body>
@@ -72,6 +83,7 @@
         <label for="invoice-number">Invoice Number</label>
         <input id="invoice-number" type="text" value="INV-2026-001" placeholder="INV-001" />
       </div>
+      <div class="field"><label for="vendor-name">Vendor / supplier (optional)</label><input id="vendor-name" type="text" maxlength="200" placeholder="Vendor name" /></div>
       <div class="field">
         <label for="currency">Currency</label>
         <input id="currency" type="text" value="USD" maxlength="8" placeholder="USD" />
@@ -108,6 +120,30 @@
     </div>
     <button id="check-btn" class="btn btn-block" type="button">Check Invoice</button>
     <div id="status" role="status" aria-live="polite"></div>
+    <div class="section-title" style="margin-top:14px">Deterministic calculation</div>
+    <div id="deterministic-result" class="result-box muted">Not checked yet. The deterministic check is the source of PASS/FAIL.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">AI Invoice Review <span>Analysis only</span></div>
+    <p class="hint">AI reviews the invoice after deterministic validation. It cannot recalculate amounts or change PASS/FAIL.</p>
+    <div id="ai-review" class="result-box muted">AI analysis appears here after a deterministic check.</div>
+    <button id="review-btn" class="btn btn-secondary btn-sm" type="button" disabled>Retry AI review</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">AI Complaint Studio</div>
+    <p class="hint">AI drafts a formal request using only invoice evidence and available review findings. Unknown details are flagged; nothing is sent automatically. Edit before use.</p>
+    <div class="form-grid"><div class="field"><label for="complaint-tone">Tone</label><select id="complaint-tone"><option>Professional</option><option>Firm</option><option>Concise</option></select></div></div>
+    <textarea id="complaint-draft" placeholder="Generate a draft after checking an invoice."></textarea>
+    <div class="row-gap"><button id="generate-complaint" class="btn btn-secondary btn-sm" type="button">Generate draft</button><button id="copy-complaint" class="btn btn-secondary btn-sm" type="button">Copy</button><button id="download-complaint" class="btn btn-secondary btn-sm" type="button">Download</button></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Local History <span class="row-gap"><button id="save-history" class="btn btn-sm" type="button">Save current</button><button id="clear-history" class="btn btn-danger btn-sm" type="button">Clear all</button></span></div>
+    <p class="hint">Saved only in this browser (up to 100 entries). History can include invoice data.</p>
+    <input id="history-search" type="search" placeholder="Search invoice, vendor, total…" aria-label="Search history" />
+    <div id="history-status" class="hint" role="status"></div><div id="history-list"></div>
   </div>
 
   <script src="./anna-tool-ids.js" defer></script>
