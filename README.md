@@ -27,8 +27,10 @@ A deterministic invoice validation mini-app and Executa built for the Anna AI Ap
 invoice-sanity-check/
 +-- manifest.json          # App manifest: UI bundle, views, host_api ACL, bundled executa refs
 +-- app.json               # Listing metadata (description, logo, screenshots) + bundled_executas
++-- package.json           # npm scripts (validate, test:acl)
++-- package-lock.json      # Pinned npm dependencies
 +-- assets/logo.svg        # Store logo
-+-- screenshots/           # Store listing screenshots (01-invoice-form.png, 02-pass-result.png, 03-fail-result.png)
++-- screenshots/           # Store listing screenshots (01-invoice-form.png, 02-pass-result.png, 03-fail-result.png, invoice-final-1.png, invoice-final-2.png, invoice-final-3.png, invoice-final-4.png)
 +-- .github/workflows/
 |   +-- build-executa.yml  # PyInstaller per-platform build -> GitHub Release assets
 +-- bundle/
